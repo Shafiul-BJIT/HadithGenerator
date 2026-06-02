@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HadithGenerator", "HadithGenerator\HadithGenerator.csproj", "{F83A6749-F6BC-45E5-81F7-1DC339F27B1B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F83A6749-F6BC-45E5-81F7-1DC339F27B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F83A6749-F6BC-45E5-81F7-1DC339F27B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F83A6749-F6BC-45E5-81F7-1DC339F27B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F83A6749-F6BC-45E5-81F7-1DC339F27B1B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
