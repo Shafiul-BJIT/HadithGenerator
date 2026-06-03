@@ -1,0 +1,27 @@
+@model HadithGenerator.Models.ViewModels.HadithViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Hadith Index Page</title>
+</head>
+<body>
+<div>
+    <h1>Hadith Index Page</h1>
+    <div>
+        <h2>@Model.BanglaRaw</h2>
+        <h2>@Model.BookNameBN</h2>
+        <h2>@Model.ExplanationRaw</h2>
+        <h2>@Model.HadithNo</h2>
+        <h2>@Model.NoteRaw</h2>
+        <h2>@Model.SectionBN</h2>
+        <h2>@Model.StatusBN</h2>
+    </div>
+</div>
+</body>
+</html>
