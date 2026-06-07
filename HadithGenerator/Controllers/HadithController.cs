@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using HadithGenerator.Models;
 using HadithGenerator.Models.ViewModels;
 using HadithGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,5 +27,11 @@ public class HadithController : Controller
     {
         var hadithViewModel = await _hadithService.GenerateNew();
         return View("Index", hadithViewModel);
+    }
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

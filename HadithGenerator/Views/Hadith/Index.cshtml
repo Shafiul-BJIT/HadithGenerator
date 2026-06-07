@@ -1,27 +1,73 @@
 @model HadithGenerator.Models.ViewModels.HadithViewModel
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Random Sahih Hadith";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>Hadith Index Page</title>
-</head>
-<body>
-<div>
-    <h1>Hadith Index Page</h1>
-    <div>
-        <h2>@Model.BanglaRaw</h2>
-        <h2>@Model.BookNameBN</h2>
-        <h2>@Model.ExplanationRaw</h2>
-        <h2>@Model.HadithNo</h2>
-        <h2>@Model.NoteRaw</h2>
-        <h2>@Model.SectionBN</h2>
-        <h2>@Model.StatusBN</h2>
+<section class="hadith-page">
+    <div class="hadith-header">
+        <div>
+            <p class="hadith-kicker">Random Sahih Hadith</p>
+            <h1>সহিহ হাদিস</h1>
+        </div>
+        <a class="btn btn-primary hadith-action" asp-controller="Hadith" asp-action="GenerateNewHadith">
+            Generate New
+        </a>
     </div>
-</div>
-</body>
-</html>
+
+    @if (Model.HadithNo == 0)
+    {
+        <div class="hadith-empty">
+            <h2>No hadith found</h2>
+            <p>Please try generating again. The service only returns hadiths marked as সহিহ.</p>
+            <a class="btn btn-outline-primary" asp-controller="Hadith" asp-action="GenerateNewHadith">
+                Try Again
+            </a>
+        </div>
+    }
+    else
+    {
+        <article class="hadith-reader">
+            <header class="hadith-title-block">
+                <div>
+                    <p class="hadith-book">@Model.BookNameBN</p>
+                    <h2>Hadith No. @Model.HadithNo</h2>
+                </div>
+                <span class="hadith-status">@Model.StatusBN</span>
+            </header>
+
+            <dl class="hadith-meta">
+                <div>
+                    <dt>Section</dt>
+                    <dd>@Model.SectionBN</dd>
+                </div>
+                <div>
+                    <dt>Source</dt>
+                    <dd>@Model.BookNameBN</dd>
+                </div>
+            </dl>
+
+            <div class="hadith-content">
+                @Html.Raw(Model.BanglaRaw)
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.NoteRaw))
+            {
+                <section class="hadith-note">
+                    <h3>Note</h3>
+                    <p>@Model.NoteRaw</p>
+                </section>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.ExplanationRaw))
+            {
+                <section class="hadith-explanation">
+                    <h3>Explanation</h3>
+                    <div>
+                        @Html.Raw(Model.ExplanationRaw)
+                    </div>
+                </section>
+            }
+        </article>
+    }
+</section>
