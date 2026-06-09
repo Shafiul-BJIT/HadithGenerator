@@ -6,6 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddHttpClient<IHadithService, HadithService>();
+builder.Services
+    .AddHttpClient<IHadithImageService, OpenRouterHadithImageService>(client =>
+    {
+        client.Timeout = TimeSpan.FromMinutes(5);
+    });
 
 var app = builder.Build();
 

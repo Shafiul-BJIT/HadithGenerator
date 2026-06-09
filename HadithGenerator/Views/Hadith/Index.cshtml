@@ -69,5 +69,148 @@
                 </section>
             }
         </article>
+
+        <section class="image-studio" aria-labelledby="image-studio-title">
+            <div class="image-studio-header">
+                <div>
+                    <p class="hadith-kicker">OpenRouter Riverflow</p>
+                    <h2 id="image-studio-title">Hadith Image Designs</h2>
+                </div>
+
+                @if (Model.ImageDesigns.Count == 0)
+                {
+                    <form id="image-generation-form"
+                          asp-controller="Hadith"
+                          asp-action="GenerateImages"
+                          method="post">
+                        <input asp-for="HadithNo" type="hidden" />
+                        <input asp-for="BanglaRaw" type="hidden" />
+                        <input asp-for="BookNameBN" type="hidden" />
+                        <input asp-for="SectionBN" type="hidden" />
+                        <input asp-for="StatusBN" type="hidden" />
+                        <button id="generate-image-button"
+                                class="btn btn-dark"
+                                type="submit"
+                                disabled="@(!Model.IsImageGenerationConfigured)">
+                            Generate @Model.ImageDesignCount @(Model.ImageDesignCount == 1 ? "Design" : "Designs")
+                        </button>
+                    </form>
+                }
+            </div>
+
+            @if (!Model.IsImageGenerationConfigured)
+            {
+                <div class="image-studio-notice">
+                    Set <code>OPENROUTER_API_KEY</code> or <code>OpenRouterImage__ApiKey</code> to enable generation.
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.ImageGenerationError))
+            {
+                <div class="alert alert-warning mb-0" role="alert">
+                    @Model.ImageGenerationError
+                </div>
+            }
+
+            <div id="image-generation-loader"
+                 class="image-generation-loader"
+                 role="status"
+                 aria-live="polite"
+                 hidden>
+                <span class="spinner-border" aria-hidden="true"></span>
+                <div>
+                    <strong>Generating image</strong>
+                    <p>This can take several minutes. Keep this page open.</p>
+                </div>
+            </div>
+
+            @if (Model.ImageDesigns.Count > 0)
+            {
+                <div class="image-design-grid">
+                    @for (var index = 0; index < Model.ImageDesigns.Count; index++)
+                    {
+                        var design = Model.ImageDesigns[index];
+                        <label class="image-design-option">
+                            <input type="radio"
+                                   name="selectedDesign"
+                                   value="@index"
+                                   checked="@(index == 0)" />
+                            <span class="image-design-frame">
+                                <canvas class="hadith-design-canvas"
+                                        width="1600"
+                                        height="900"
+                                        data-index="@index"
+                                        data-background="@design.DataUrl"></canvas>
+                            </span>
+                            <span class="image-design-name">@design.Name</span>
+                        </label>
+                    }
+                </div>
+
+                <div class="image-download-bar">
+                    <label for="download-format">Format</label>
+                    <select id="download-format" class="form-select">
+                        <option value="image/png">PNG</option>
+                        <option value="image/jpeg">JPG</option>
+                    </select>
+                    <button id="download-design" class="btn btn-primary" type="button">
+                        Download Selected
+                    </button>
+                </div>
+            }
+        </section>
     }
 </section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const form = document.getElementById("image-generation-form");
+            if (!form) return;
+
+            form.addEventListener("submit", () => {
+                const button = document.getElementById("generate-image-button");
+                const loader = document.getElementById("image-generation-loader");
+
+                button.disabled = true;
+                button.textContent = "Generating...";
+                loader.hidden = false;
+                loader.scrollIntoView({ behavior: "smooth", block: "center" });
+            });
+        })();
+    </script>
+}
+
+@if (Model.ImageDesigns.Count > 0)
+{
+    @section ImageScripts {
+        <script>
+            (() => {
+                const canvases = [...document.querySelectorAll(".hadith-design-canvas")];
+                const hadithNo = @Model.HadithNo;
+
+                const drawDesign = async canvas => {
+                    const context = canvas.getContext("2d");
+                    const image = new Image();
+                    image.src = canvas.dataset.background;
+                    await image.decode();
+
+                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                };
+
+                Promise.all(canvases.map(drawDesign));
+
+                document.getElementById("download-design").addEventListener("click", () => {
+                    const selected = document.querySelector('input[name="selectedDesign"]:checked');
+                    const canvas = canvases[Number(selected.value)];
+                    const mimeType = document.getElementById("download-format").value;
+                    const extension = mimeType === "image/jpeg" ? "jpg" : "png";
+                    const link = document.createElement("a");
+                    link.download = `sahih-hadith-${hadithNo}.${extension}`;
+                    link.href = canvas.toDataURL(mimeType, .94);
+                    link.click();
+                });
+            })();
+        </script>
+    }
+}
